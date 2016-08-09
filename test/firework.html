@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			body {
+				overflow: hidden;
+				background: #000;
+			}
+		</style>
+		<script src="tool.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			window.onload = function() {
+				document.onclick = function(ev) {
+					ev = ev || window.event;
+					//执行发射，传入鼠标坐标
+					launch({
+						left: ev.clientX,
+						top: ev.clientY
+					});
+				}
+
+				function launch(target) {
+					//	console.log(target.left);console.log(target.top);
+					var launcher = document.createElement("div");
+					launcher.style.width = "5px";
+					launcher.style.height = "30px";
+					launcher.style.position = "absolute";
+					launcher.style.background = randomColor();
+					//将发射器设置初始位置
+					launcher.style.left = target.left + "px";
+					launcher.style.top = document.documentElement.clientHeight + "px";
+					document.body.appendChild(launcher);
+					startMove(launcher, {
+						top: target.top,
+						height: 5,
+					}, function() {
+						document.body.removeChild(launcher);
+						boom(target);
+					});
+				}
+
+				function boom(target) {
+					//生成小火花  60~100个
+					var num = Math.round(Math.random() * 60 + 40);
+					for(var i = 0; i < num; i++) {
+						var spark = document.createElement("div");
+						var s = new Spark(spark, target);
+					}
+				}
+
+				//构造函数 
+				function Spark(obj, target) {
+					this.obj = obj;
+					this.pos = target; //用于存储位置
+					this.speedX = null;
+					this.speedY = null;
+					this.timer = null;
+					this.init(); //小火花初始化
+					this.moveFn(); //小火花运动
+
+				}
+
+				Spark.prototype.init = function() {
+					this.obj.style.width = "5px";
+					this.obj.style.height = "5px";
+					this.obj.style.background = randomColor();
+					this.obj.style.position = "absolute";
+					//Math.round(Math.random()*20)  设置速度  
+					//((Math.random()-0.5)>0?1:-1)  三目运算符用于设置运动的方向
+					this.speedX = Math.round(Math.random() * 8) * ((Math.random() - 0.5) > 0 ? 1 : -1);
+					this.speedY = Math.round(Math.random() * 8) * ((Math.random() - 0.5) > 0 ? 1 : -1);
+					//console.log(this.pos.left,this.pos.top);
+					this.obj.style.left = this.pos.left + "px";
+					this.obj.style.top = this.pos.top + "px";
+					document.body.appendChild(this.obj);
+					console.log(document.body.chlidren)
+				}
+
+				Spark.prototype.moveFn = function() {
+					var that = this;
+					this.timer = setInterval(function() {
+						//	console.log(that.obj.offsetLeft,that.obj.offsetTop);
+						that.obj.style.left = that.obj.offsetLeft + that.speedX + "px";
+						that.obj.style.top = that.obj.offsetTop + that.speedY + "px";
+						that.speedY += 0.2; //speedY+=0.1   让所有火花最终向下运动
+//						if(that.obj.offsetTop>document.documentElement.clientHeight){
+//							clearInterval(that.timer);
+//							document.body.removeChild(that.obj);
+//						
+						//如果小火花运动的距离250px  则让它消失（制造圆形）
+						var xx = (that.obj.offsetLeft - that.pos.left) * (that.obj.offsetLeft - that.pos.left);
+						var yy = (that.obj.offsetTop - that.pos.top) * (that.obj.offsetTop - that.pos.top);
+						if(xx + yy > 62500) {
+							clearInterval(that.timer);
+							document.body.removeChild(that.obj);
+						}
+					}, 30)
+
+				}
+
+			}
+		</script>
+	</head>
+
+	<body>
+
+	</body>
+
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			strong{display: block; width: 300px;margin: 100px auto;}
+			#box1{width: 200px;height: 40px;border: 1px solid red;float: left;}
+			#box2{height: 40px;}
+			span{float: left;line-height: 40px; font-size: 30px;}
+		</style>
+		
+		<script type="text/javascript">
+			window.onload=function(){
+				var oBt=document.getElementById("btn");
+				var oBox1=document.getElementById("box1");
+				var oBox2=document.getElementById("box2");
+				var oSp=document.getElementById("sp");
+				var i=0;
+				var timer=null;
+				
+				function fn(){	
+						i++;
+						oBox2.style.width=i+"%";
+						
+						if (i<20) {
+							oBox2.style.background="red";
+						} else if(i<80){
+							oBox2.style.background="orange";
+						}else{
+							oBox2.style.background="green";
+						}
+						
+						oSp.innerHTML=i+"%";
+						
+						if (i==100) {     //当充电完成时，清除定时器并且让i=0
+							clearInterval(timer);
+							timer=null;
+							i=0;      //重新归0
+							alert("恭喜你 ！充电完成~")
+						}
+				}
+				oBt.onclick=function(){
+					if (timer) {        //如果已经存在定时器（以及在运行）直接return出去。不作操作，以免影响原本操作
+							return ;
+						}
+					timer=setInterval(fn,50);
+				}
+				
+				
+				
+			}
+			
+			
+		</script>
+	</head>
+	
+	<body>
+		<strong>
+			<input type="button" id="btn" value="点击开始充电" /><br/><br/>
+			<div id="box1">
+				<div id="box2">	
+				</div>	
+			</div>
+			<span id="sp">
+				0%
+			</span>
+		</strong>
+	</body>
+</html>
